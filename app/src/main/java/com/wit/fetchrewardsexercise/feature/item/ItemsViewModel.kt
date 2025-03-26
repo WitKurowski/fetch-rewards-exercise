@@ -4,7 +4,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wit.fetchrewardsexercise.repository.ItemsRepository
+import com.wit.fetchrewardsexercise.usecase.GetItemsSortedByListIdAndNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ItemsViewModel @Inject constructor(private val itemsRepository: ItemsRepository) :
+class ItemsViewModel @Inject constructor(private val getItemsSortedByListIdAndNameUseCase: GetItemsSortedByListIdAndNameUseCase) :
 	DefaultLifecycleObserver, ViewModel() {
 	private val _itemStatesStateFlow = MutableStateFlow<List<ItemState>>(emptyList())
 	val itemStatesStateFlow = _itemStatesStateFlow.asStateFlow()
@@ -21,7 +21,7 @@ class ItemsViewModel @Inject constructor(private val itemsRepository: ItemsRepos
 		super.onCreate(owner)
 
 		viewModelScope.launch {
-			val items = itemsRepository.getAll()
+			val items = getItemsSortedByListIdAndNameUseCase()
 			val itemStates = items.map {
 				// TODO: Consider handling this more cleanly than with "!!".
 				ItemState(it.id, it.listId, it.name!!)
