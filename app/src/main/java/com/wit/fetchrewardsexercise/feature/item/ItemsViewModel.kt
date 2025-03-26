@@ -23,7 +23,8 @@ class ItemsViewModel @Inject constructor(private val itemsRepository: ItemsRepos
 		viewModelScope.launch {
 			val items = itemsRepository.getAll()
 			val itemStates = items.map {
-				ItemState(it.id, it.listId, it.name)
+				// TODO: Consider handling this more cleanly than with "!!".
+				ItemState(it.id, it.listId, it.name!!)
 			}
 
 			_itemStatesStateFlow.emit(itemStates)

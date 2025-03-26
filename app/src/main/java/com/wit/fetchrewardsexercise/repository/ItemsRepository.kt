@@ -7,11 +7,18 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ItemsRepository @Inject constructor(private val itemsRemoteDataSource: ItemsRemoteDataSource) {
+	/**
+	 * Returns the full list of items.
+	 * Note: Any items with a null or blank name are filtered out before returning.
+	 */
 	suspend fun getAll(): List<Item> {
 		val items = withContext(Dispatchers.IO) {
 			itemsRemoteDataSource.getAll()
 		}
+		val filteredItems = items.filter {
+			!it.name.isNullOrEmpty()
+		}
 
-		return items
+		return filteredItems
 	}
 }
