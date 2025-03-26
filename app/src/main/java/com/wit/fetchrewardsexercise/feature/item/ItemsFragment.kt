@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +36,13 @@ class ItemsFragment : Fragment() {
 
 		with(viewBinding.items) {
 			adapter = itemsAdapter
-			layoutManager = LinearLayoutManager(context)
+			layoutManager = LinearLayoutManager(context).apply {
+				val dividerItemDecoration =
+					DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+				addItemDecoration(dividerItemDecoration)
+
+				orientation = LinearLayoutManager.VERTICAL
+			}
 		}
 
 		val view = viewBinding.root
