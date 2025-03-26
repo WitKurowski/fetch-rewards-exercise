@@ -7,6 +7,10 @@ android {
 	namespace = "com.wit.fetchrewardsexercise"
 	compileSdk = 35
 
+	buildFeatures {
+		viewBinding = true
+	}
+
 	defaultConfig {
 		applicationId = "com.wit.fetchrewardsexercise"
 		minSdk = 24
