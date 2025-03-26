@@ -58,6 +58,8 @@ class ItemsFragment : Fragment() {
 	private class ItemsAdapter :
 		ListAdapter<ItemState, ItemsAdapter.ItemViewHolder>(ItemCallback()) {
 		override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+			val itemState = getItem(position)
+			holder.itemListItemBinding.name.text = itemState.name
 		}
 
 		override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -77,7 +79,7 @@ class ItemsFragment : Fragment() {
 				oldItem.id == newItem.id
 		}
 
-		private class ItemViewHolder(private val itemListItemBinding: ItemListItemBinding) :
+		private class ItemViewHolder(val itemListItemBinding: ItemListItemBinding) :
 			RecyclerView.ViewHolder(itemListItemBinding.root)
 	}
 }
