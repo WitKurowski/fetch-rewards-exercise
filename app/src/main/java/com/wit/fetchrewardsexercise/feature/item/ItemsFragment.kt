@@ -86,6 +86,17 @@ class ItemsFragment : Fragment() {
 
 	private class ItemsAdapter :
 		ListAdapter<ListItemState, ItemsAdapter.ViewHolder>(ItemCallback()) {
+		override fun getItemViewType(position: Int): Int {
+			val listItemState = getItem(position)
+			val itemViewType = if (listItemState is ParentListItemState) {
+				0
+			} else {
+				1
+			}
+
+			return itemViewType
+		}
+
 		override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 			val listItemState = getItem(position)
 
@@ -98,17 +109,6 @@ class ItemsFragment : Fragment() {
 				val name = context.getString(R.string.parent_name, parentListItemState.id)
 				holder.parentListItemBinding.name.text = name
 			}
-		}
-
-		override fun getItemViewType(position: Int): Int {
-			val listItemState = getItem(position)
-			val itemViewType = if (listItemState is ParentListItemState) {
-				0
-			} else {
-				1
-			}
-
-			return itemViewType
 		}
 
 		override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
