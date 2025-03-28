@@ -10,11 +10,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
 class ItemsViewModel @Inject constructor(private val getItemsSortedByListIdAndNameUseCase: GetItemsSortedByListIdAndNameUseCase) :
 	DefaultLifecycleObserver, ViewModel() {
+	private val _errorStateStateFlow = MutableStateFlow(ErrorState(visible = false))
+	val errorStateStateFlow = _errorStateStateFlow.asStateFlow()
 	private val _listItemStatesStateFlow = MutableStateFlow<List<ListItemState>>(emptyList())
 	val listItemStatesStateFlow = _listItemStatesStateFlow.asStateFlow()
 	private val _loadingStateStateFlow = MutableStateFlow(LoadingState(visible = false))
@@ -24,27 +27,37 @@ class ItemsViewModel @Inject constructor(private val getItemsSortedByListIdAndNa
 		super.onCreate(owner)
 
 		viewModelScope.launch {
+			_errorStateStateFlow.update {
+				it.copy(visible = false)
+			}
+
 			_loadingStateStateFlow.update {
 				it.copy(visible = true)
 			}
 
-			val items = getItemsSortedByListIdAndNameUseCase()
-			var previousParentId: Int? = null
-			val listItemStates = mutableListOf<ListItemState>()
+			try {
+				val items = getItemsSortedByListIdAndNameUseCase()
+				var previousParentId: Int? = null
+				val listItemStates = mutableListOf<ListItemState>()
 
-			items.forEach {
-				val parentId = it.listId
+				items.forEach {
+					val parentId = it.listId
 
-				if (parentId != previousParentId) {
-					listItemStates.add(ParentListItemState(parentId))
-					previousParentId = parentId
+					if (parentId != previousParentId) {
+						listItemStates.add(ParentListItemState(parentId))
+						previousParentId = parentId
+					}
+
+					// TODO: Consider handling this more cleanly than with "!!".
+					listItemStates.add(ChildListItemState(it.id, it.name!!))
 				}
 
-				// TODO: Consider handling this more cleanly than with "!!".
-				listItemStates.add(ChildListItemState(it.id, it.name!!))
+				_listItemStatesStateFlow.emit(listItemStates)
+			} catch (httpException: HttpException) {
+				_errorStateStateFlow.update {
+					it.copy(visible = true)
+				}
 			}
-
-			_listItemStatesStateFlow.emit(listItemStates)
 
 			_loadingStateStateFlow.update {
 				it.copy(visible = false)

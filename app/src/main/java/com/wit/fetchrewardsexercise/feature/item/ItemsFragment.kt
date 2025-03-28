@@ -73,6 +73,14 @@ class ItemsFragment : Fragment() {
 					}
 				}
 			}
+
+			lifecycleScope.launch {
+				repeatOnLifecycle(Lifecycle.State.CREATED) {
+					viewModel.errorStateStateFlow.collect {
+						viewBinding.errorContainer.isVisible = it.visible
+					}
+				}
+			}
 		}
 	}
 

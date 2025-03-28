@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Fetch Rewards Exercise</string>
+    <string name="error_icon">Error icon</string>
+    <string name="failed_to_load_items">Failed to load items</string>
     <string name="parent_name">List %1$d</string>
 </resources>
