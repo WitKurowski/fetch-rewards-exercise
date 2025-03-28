@@ -12,6 +12,7 @@ class ItemsRepository @Inject constructor(private val itemsRemoteDataSource: Ite
 	 * Note: Any items with a null or blank name are filtered out before returning.
 	 */
 	suspend fun getAll(): List<Item> {
+		// TODO: Inject the dispatcher into this class.
 		val items = withContext(Dispatchers.IO) {
 			itemsRemoteDataSource.getAll()
 		}

@@ -7,6 +7,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GetItemsSortedByListIdAndNameUseCase @Inject constructor(private val itemsRepository: ItemsRepository) {
+	// TODO: Inject the dispatcher into this class.
 	suspend operator fun invoke(): List<Item> = withContext(Dispatchers.Default) {
 		val items = itemsRepository.getAll()
 
