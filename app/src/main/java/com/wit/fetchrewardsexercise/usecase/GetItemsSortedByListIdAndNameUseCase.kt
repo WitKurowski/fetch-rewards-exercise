@@ -11,7 +11,10 @@ class GetItemsSortedByListIdAndNameUseCase @Inject constructor(private val items
 		val items = itemsRepository.getAll()
 
 		items.sortedBy {
-			it.name
+			val name = it.name!!
+			val number = name.split(" ")[1].toInt()
+
+			number
 		}.sortedBy {
 			it.listId
 		}
