@@ -4,7 +4,7 @@ This app was built on, and is confirmed to run on, Android Studio Meerkat | 2024
 - Android 15.0 (API Level 35)
 - Android SDK Build-Tools 35.0.0
 
-With that configuration, building and running the project should work immediately without any modifications.
+With that configuration, building and running the project should work without any modifications.
 
 # Potential Improvements
 - Extra logic was added to sort the items within each list grouping by their numerical ordering rather than by their alphabetical ordering (i.e., to ensure "Item 2" is shown before "Item 11" rather than vice versa), but if that is not preferred, that could be rolled back to the simpler alphabetical ordering.
