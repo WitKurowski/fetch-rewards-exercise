@@ -34,7 +34,7 @@ class ItemsFragment : Fragment() {
 	): View {
 		super.onCreateView(inflater, container, savedInstanceState)
 
-		lifecycle.addObserver(viewModel)
+		viewLifecycleOwner.lifecycle.addObserver(viewModel)
 
 		viewBinding = FragmentItemsBinding.inflate(inflater, container, false)
 
