@@ -19,7 +19,7 @@ class ItemsRepository @Inject constructor(private val itemsRemoteDataSource: Ite
 		// TODO: Consider moving this filtering either into the use case we just added,
 		//  GetItemsSortedByListIdAndNameUseCase, or into a brand new one.
 		val filteredItems = items.filter {
-			!it.name.isNullOrEmpty()
+			!it.name.isNullOrBlank()
 		}
 
 		return filteredItems
