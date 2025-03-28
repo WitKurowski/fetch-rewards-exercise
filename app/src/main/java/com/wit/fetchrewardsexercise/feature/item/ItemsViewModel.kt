@@ -62,10 +62,10 @@ class ItemsViewModel @Inject constructor(private val getItemsSortedByListIdAndNa
 				_errorStateStateFlow.update {
 					it.copy(visible = true)
 				}
-			}
-
-			_loadingStateStateFlow.update {
-				it.copy(visible = false)
+			} finally {
+				_loadingStateStateFlow.update {
+					it.copy(visible = false)
+				}
 			}
 		}
 	}
