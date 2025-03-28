@@ -8,6 +8,7 @@ import com.wit.fetchrewardsexercise.usecase.GetItemsSortedByListIdAndNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,11 +17,17 @@ class ItemsViewModel @Inject constructor(private val getItemsSortedByListIdAndNa
 	DefaultLifecycleObserver, ViewModel() {
 	private val _listItemStatesStateFlow = MutableStateFlow<List<ListItemState>>(emptyList())
 	val listItemStatesStateFlow = _listItemStatesStateFlow.asStateFlow()
+	private val _loadingStateStateFlow = MutableStateFlow(LoadingState(visible = false))
+	val loadingStateStateFlow = _loadingStateStateFlow.asStateFlow()
 
 	override fun onCreate(owner: LifecycleOwner) {
 		super.onCreate(owner)
 
 		viewModelScope.launch {
+			_loadingStateStateFlow.update {
+				it.copy(visible = true)
+			}
+
 			val items = getItemsSortedByListIdAndNameUseCase()
 			var previousParentId: Int? = null
 			val listItemStates = mutableListOf<ListItemState>()
@@ -38,6 +45,10 @@ class ItemsViewModel @Inject constructor(private val getItemsSortedByListIdAndNa
 			}
 
 			_listItemStatesStateFlow.emit(listItemStates)
+
+			_loadingStateStateFlow.update {
+				it.copy(visible = false)
+			}
 		}
 	}
 }
