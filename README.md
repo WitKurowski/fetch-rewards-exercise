@@ -2,6 +2,7 @@
 This is a fairly straightforward project that does not require any initial setup.  Simply build and run the code through Android Studio.
 
 # Potential Improvements
+- Extra logic was added to sort the items within each list grouping by their numerical ordering rather than by their alphabetical ordering (i.e., to ensure "Item 2" is shown before "Item 11" rather than vice versa), but if that is not preferred, that could be rolled back to the simpler alphabetical ordering.
 - Switch to using an expandable list to allow for collapsing of parent groups.
 - Inject dispatchers in repository and use cases.
 - Convert XMLs to Compose.
