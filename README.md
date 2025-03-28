@@ -16,6 +16,6 @@ With that configuration, building and running the project should work immediatel
 - Consider moving conversion of `Item`s to `ParentListItemState`s/`ChildListItemState`s to `Dispatchers.Default` if the size of the list is too large.  (Having a paging API for larger lists would be even better, although that is not something that the Android app has control over.)
 - Convert the basic progress indicator to something more advanced, such as a "skeleton screen", when data is being loaded.
 - Add a local data source, such as a Room database, to cache data and to allow offline use of the app.
-- Consider avoiding fetching data again if we already have cached data, whether it is within a local data source, or within our view model (as may be the case after a configuration change).
+- Consider avoiding fetching data again if we already have cached data, which could be within a local data source, or simply within our view model (as may be the case after a configuration change).
 - Add a way for the user to retry the data fetch if the first attempt fails.
-- If we wanted to prepare this app for production use, Proguard could be leveraged along with the `isMinifyEnabled` attribute.
+- If we wanted to prepare this app for production use, Proguard could be leveraged along with the `isMinifyEnabled` attribute to ensure a small, obfuscated app package.
