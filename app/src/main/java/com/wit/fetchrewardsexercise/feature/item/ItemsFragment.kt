@@ -38,6 +38,14 @@ class ItemsFragment : Fragment() {
 
 		viewBinding = FragmentItemsBinding.inflate(inflater, container, false)
 
+		val view = viewBinding.root
+
+		return view
+	}
+
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
+
 		with(viewBinding.items) {
 			adapter = itemsAdapter
 			layoutManager = LinearLayoutManager(context).apply {
@@ -48,14 +56,6 @@ class ItemsFragment : Fragment() {
 				orientation = LinearLayoutManager.VERTICAL
 			}
 		}
-
-		val view = viewBinding.root
-
-		return view
-	}
-
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
 
 		viewLifecycleOwner.lifecycleScope.launch {
 			lifecycleScope.launch {
