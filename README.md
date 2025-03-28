@@ -18,3 +18,4 @@ With that configuration, building and running the project should work immediatel
 - Add a local data source, such as a Room database, to cache data and to allow offline use of the app.
 - Consider avoiding fetching data again if we already have cached data, whether it is within a local data source, or within our view model (as may be the case after a configuration change).
 - Add a way for the user to retry the data fetch if the first attempt fails.
+- If we wanted to prepare this app for production use, Proguard could be leveraged along with the `isMinifyEnabled` attribute.
