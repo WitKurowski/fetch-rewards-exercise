@@ -41,7 +41,8 @@ class ItemsViewModel @Inject constructor(private val getItemsSortedByListIdAndNa
 			}
 
 			_loadingStateStateFlow.update {
-				it.copy(visible = true)
+				// Do not show the loading state if we have data from a previous load.
+				it.copy(visible = _listItemStatesStateFlow.value.isEmpty())
 			}
 
 			try {
