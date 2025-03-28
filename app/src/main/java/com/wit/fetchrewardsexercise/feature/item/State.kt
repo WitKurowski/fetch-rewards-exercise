@@ -1,3 +1,7 @@
 package com.wit.fetchrewardsexercise.feature.item
 
-data class ItemState(val id: Int, val listId: Int, val name: String)
+data class ChildListItemState(val id: Int, val name: String) : ListItemState()
+
+sealed class ListItemState
+
+data class ParentListItemState(val id: Int) : ListItemState()

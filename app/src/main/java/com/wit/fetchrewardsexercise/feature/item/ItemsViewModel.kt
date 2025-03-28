@@ -14,20 +14,30 @@ import javax.inject.Inject
 @HiltViewModel
 class ItemsViewModel @Inject constructor(private val getItemsSortedByListIdAndNameUseCase: GetItemsSortedByListIdAndNameUseCase) :
 	DefaultLifecycleObserver, ViewModel() {
-	private val _itemStatesStateFlow = MutableStateFlow<List<ItemState>>(emptyList())
-	val itemStatesStateFlow = _itemStatesStateFlow.asStateFlow()
+	private val _listItemStatesStateFlow = MutableStateFlow<List<ListItemState>>(emptyList())
+	val listItemStatesStateFlow = _listItemStatesStateFlow.asStateFlow()
 
 	override fun onCreate(owner: LifecycleOwner) {
 		super.onCreate(owner)
 
 		viewModelScope.launch {
 			val items = getItemsSortedByListIdAndNameUseCase()
-			val itemStates = items.map {
+			var previousParentId: Int? = null
+			val listItemStates = mutableListOf<ListItemState>()
+
+			items.forEach {
+				val parentId = it.listId
+
+				if (parentId != previousParentId) {
+					listItemStates.add(ParentListItemState(parentId))
+					previousParentId = parentId
+				}
+
 				// TODO: Consider handling this more cleanly than with "!!".
-				ItemState(it.id, it.listId, it.name!!)
+				listItemStates.add(ChildListItemState(it.id, it.name!!))
 			}
 
-			_itemStatesStateFlow.emit(itemStates)
+			_listItemStatesStateFlow.emit(listItemStates)
 		}
 	}
 }

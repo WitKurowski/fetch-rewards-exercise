@@ -14,8 +14,11 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
+import com.wit.fetchrewardsexercise.R
+import com.wit.fetchrewardsexercise.databinding.ChildListItemBinding
 import com.wit.fetchrewardsexercise.databinding.FragmentItemsBinding
-import com.wit.fetchrewardsexercise.databinding.ItemListItemBinding
+import com.wit.fetchrewardsexercise.databinding.ParentListItemBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -55,7 +58,7 @@ class ItemsFragment : Fragment() {
 
 		viewLifecycleOwner.lifecycleScope.launch {
 			repeatOnLifecycle(Lifecycle.State.CREATED) {
-				viewModel.itemStatesStateFlow.collect {
+				viewModel.listItemStatesStateFlow.collect {
 					itemsAdapter.submitList(it)
 				}
 			}
@@ -63,30 +66,76 @@ class ItemsFragment : Fragment() {
 	}
 
 	private class ItemsAdapter :
-		ListAdapter<ItemState, ItemsAdapter.ItemViewHolder>(ItemCallback()) {
-		override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-			val itemState = getItem(position)
-			holder.itemListItemBinding.name.text = itemState.name
+		ListAdapter<ListItemState, ItemsAdapter.ViewHolder>(ItemCallback()) {
+		override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+			val listItemState = getItem(position)
+
+			if (holder is ChildViewHolder) {
+				val childListItemState = listItemState as ChildListItemState
+				holder.childListItemBinding.name.text = childListItemState.name
+			} else if (holder is ParentViewHolder) {
+				val parentListItemState = listItemState as ParentListItemState
+				val context = holder.parentListItemBinding.root.context
+				val name = context.getString(R.string.parent_name, parentListItemState.id)
+				holder.parentListItemBinding.name.text = name
+			}
 		}
 
-		override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+		override fun getItemViewType(position: Int): Int {
+			val listItemState = getItem(position)
+			val itemViewType = if (listItemState is ParentListItemState) {
+				0
+			} else {
+				1
+			}
+
+			return itemViewType
+		}
+
+		override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 			val context = parent.context
 			val layoutInflater = LayoutInflater.from(context)
-			val itemListItemBinding = ItemListItemBinding.inflate(layoutInflater, parent, false)
-			val itemViewHolder = ItemViewHolder(itemListItemBinding)
+			val viewHolder = if (viewType == 0) {
+				val parentListItemBinding =
+					ParentListItemBinding.inflate(layoutInflater, parent, false)
+				ParentViewHolder(parentListItemBinding)
+			} else {
+				val childListItemBinding =
+					ChildListItemBinding.inflate(layoutInflater, parent, false)
+				ChildViewHolder(childListItemBinding)
+			}
 
-			return itemViewHolder
+			return viewHolder
 		}
 
-		private class ItemCallback : DiffUtil.ItemCallback<ItemState>() {
-			override fun areContentsTheSame(oldItem: ItemState, newItem: ItemState): Boolean =
-				oldItem == newItem
+		private class ItemCallback : DiffUtil.ItemCallback<ListItemState>() {
+			override fun areContentsTheSame(
+				oldItem: ListItemState, newItem: ListItemState
+			): Boolean = oldItem == newItem
 
-			override fun areItemsTheSame(oldItem: ItemState, newItem: ItemState): Boolean =
-				oldItem.id == newItem.id
+			override fun areItemsTheSame(
+				oldItem: ListItemState, newItem: ListItemState
+			): Boolean {
+				val itemsTheSame =
+					if (oldItem is ChildListItemState && newItem is ChildListItemState) {
+						oldItem.id == newItem.id
+					} else if (oldItem is ParentListItemState && newItem is ParentListItemState) {
+						oldItem.id == newItem.id
+					} else {
+						false
+					}
+
+				return itemsTheSame
+			}
 		}
 
-		private class ItemViewHolder(val itemListItemBinding: ItemListItemBinding) :
-			RecyclerView.ViewHolder(itemListItemBinding.root)
+		private class ChildViewHolder(val childListItemBinding: ChildListItemBinding) :
+			ViewHolder(childListItemBinding)
+
+		private class ParentViewHolder(val parentListItemBinding: ParentListItemBinding) :
+			ViewHolder(parentListItemBinding)
+
+		private open class ViewHolder(viewBinding: ViewBinding) :
+			RecyclerView.ViewHolder(viewBinding.root)
 	}
 }
