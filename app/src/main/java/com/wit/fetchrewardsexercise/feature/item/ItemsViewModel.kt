@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -54,6 +55,10 @@ class ItemsViewModel @Inject constructor(private val getItemsSortedByListIdAndNa
 
 				_listItemStatesStateFlow.emit(listItemStates)
 			} catch (httpException: HttpException) {
+				_errorStateStateFlow.update {
+					it.copy(visible = true)
+				}
+			} catch (ioException: IOException) {
 				_errorStateStateFlow.update {
 					it.copy(visible = true)
 				}
