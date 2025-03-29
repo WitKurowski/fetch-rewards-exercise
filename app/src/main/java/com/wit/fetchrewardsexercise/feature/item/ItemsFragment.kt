@@ -58,24 +58,20 @@ class ItemsFragment : Fragment() {
 		}
 
 		viewLifecycleOwner.lifecycleScope.launch {
-			lifecycleScope.launch {
-				repeatOnLifecycle(Lifecycle.State.RESUMED) {
+			repeatOnLifecycle(Lifecycle.State.RESUMED) {
+				launch {
 					viewModel.listItemStatesStateFlow.collect {
 						itemsAdapter.submitList(it)
 					}
 				}
-			}
 
-			lifecycleScope.launch {
-				repeatOnLifecycle(Lifecycle.State.RESUMED) {
+				launch {
 					viewModel.loadingStateStateFlow.collect {
 						viewBinding.progressIndicator.isVisible = it.visible
 					}
 				}
-			}
 
-			lifecycleScope.launch {
-				repeatOnLifecycle(Lifecycle.State.RESUMED) {
+				launch {
 					viewModel.errorStateStateFlow.collect {
 						viewBinding.errorContainer.isVisible = it.visible
 					}
