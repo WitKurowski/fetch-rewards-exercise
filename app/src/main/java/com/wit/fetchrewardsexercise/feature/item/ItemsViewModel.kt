@@ -1,7 +1,5 @@
 package com.wit.fetchrewardsexercise.feature.item
 
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wit.fetchrewardsexercise.usecase.GetItemsSortedByListIdAndNameUseCase
@@ -17,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ItemsViewModel @Inject constructor(private val getItemsSortedByListIdAndNameUseCase: GetItemsSortedByListIdAndNameUseCase) :
-	DefaultLifecycleObserver, ViewModel() {
+	ViewModel() {
 	private val _errorStateStateFlow = MutableStateFlow(ErrorState(visible = false))
 	val errorStateStateFlow = _errorStateStateFlow.asStateFlow()
 	private val _listItemStatesStateFlow = MutableStateFlow<List<ListItemState>>(emptyList())
@@ -32,9 +30,7 @@ class ItemsViewModel @Inject constructor(private val getItemsSortedByListIdAndNa
 		}
 	}
 
-	override fun onCreate(owner: LifecycleOwner) {
-		super.onCreate(owner)
-
+	fun fetchItems() {
 		viewModelScope.launch(coroutineExceptionHandler) {
 			_errorStateStateFlow.update {
 				it.copy(visible = false)

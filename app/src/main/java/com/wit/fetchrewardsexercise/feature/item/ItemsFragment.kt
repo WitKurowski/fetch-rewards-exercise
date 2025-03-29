@@ -34,8 +34,6 @@ class ItemsFragment : Fragment() {
 	): View {
 		super.onCreateView(inflater, container, savedInstanceState)
 
-		viewLifecycleOwner.lifecycle.addObserver(viewModel)
-
 		viewBinding = FragmentItemsBinding.inflate(inflater, container, false)
 
 		val view = viewBinding.root
@@ -45,6 +43,8 @@ class ItemsFragment : Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+
+		viewModel.fetchItems()
 
 		with(viewBinding.items) {
 			adapter = itemsAdapter
